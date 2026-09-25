@@ -35,7 +35,10 @@ export async function generateStudyResult(input: string): Promise<ReturnType<typ
 
     if (!response.ok) {
       let detail = '';
-      try { const body = await response.json(); detail = typeof body?.error?.message === 'string' ? body.error.message : ''; } catch { /* no-op */ }
+      try {
+        const body = await response.json() as { error?: { message?: string } };
+        detail = typeof body?.error?.message === 'string' ? body.error.message : '';
+      } catch { /* no-op */ }
       console.error('Gemini provider error', { status: response.status, detail });
       throw new GenerationError('The AI provider could not generate the study set.', 'PROVIDER_ERROR');
     }
